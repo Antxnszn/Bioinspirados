@@ -69,7 +69,7 @@ int main() {
         particlesArray[j].pbest_y = particlesArray[j].y;
         particlesArray[j].pbest_fitness = particlesArray[j].fitness;
         
-        // Actualizar gbest inicial si es necesario
+        
         if (particlesArray[j].fitness < gbest_fitness) {
             gbest_x = particlesArray[j].x;
             gbest_y = particlesArray[j].y;
@@ -109,7 +109,7 @@ int main() {
                 gbest_fitness = particlesArray[j].fitness;
             }
             
-            // Actualizar mejor de la iteración
+            // Actualizar mejor de la iteracion
             if (particlesArray[j].fitness < iterationBestFitness) {
                 iterationBestFitness = particlesArray[j].fitness;
                 iterationBest = {particlesArray[j].x, particlesArray[j].y, particlesArray[j].fitness};
@@ -163,7 +163,7 @@ if (particlesArray[j].fitness < particlesArray[j].pbest_fitness) {
     particlesArray[j].vy_at_pbest = particlesArray[j].vy;
 }
 cout <<"\n"<< "ENJAMBRE:" << endl;
-// Al final, para evaluar:
+// Construccion de enjambre
 for(j = 0; j < particles; j++) {
     float new_x = particlesArray[j].pbest_x + particlesArray[j].vx_at_pbest;
     float new_y = particlesArray[j].pbest_y + particlesArray[j].vy_at_pbest;
