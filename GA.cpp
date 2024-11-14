@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <ctime>
 
+using namespace std;
+
 // Estructura para representar un producto
 struct Producto {
-    std::string nombre;
+    string nombre;
     double peso;
     int costo;
 };
@@ -20,7 +22,7 @@ const double PROB_MUTACION = 0.1;
 const int MAX_ITEMS = 10;
 
 // Vector de productos
-std::vector<Producto> productos = {
+vector<Producto> productos = {
     {"Decoy Detonators", 4, 10},
     {"Love Potion", 2, 8},
     {"Extendable Ears", 5, 12},
@@ -35,13 +37,13 @@ double random_double() {
     return static_cast<double>(rand()) / RAND_MAX;
 }
 
-// Función para generar un número entero aleatorio entre min y max
-int random_int(int min, int max) {
-    return min + rand() % (max - min + 1);
+// Función para generar un número entero aleatorio entre 0 y 10
+int random_int() {
+    return rand() % 11;  // Genera números de 0 a 10
 }
 
 // Función para calcular el fitness de un individuo
-double calcular_fitness(const std::vector<int>& individuo) {
+double calcular_fitness(const vector<int>& individuo) {
     double peso_total = 0;
     int valor_total = 0;
     int love_potions = 0;
@@ -68,12 +70,12 @@ double calcular_fitness(const std::vector<int>& individuo) {
 }
 
 // Función para generar la población inicial
-std::vector<std::vector<int>> generar_poblacion_inicial() {
-    std::vector<std::vector<int>> poblacion;
+vector<vector<int>> generar_poblacion_inicial() {
+    vector<vector<int>> poblacion;
     for (int i = 0; i < TAMANO_POBLACION; ++i) {
-        std::vector<int> individuo;
+        vector<int> individuo;
         for (size_t j = 0; j < productos.size(); ++j) {
-            individuo.push_back(random_int(0, MAX_ITEMS));
+            individuo.push_back(random_int());
         }
         poblacion.push_back(individuo);
     }
@@ -81,7 +83,7 @@ std::vector<std::vector<int>> generar_poblacion_inicial() {
 }
 
 // Función para seleccionar un padre usando el método de la ruleta
-int seleccion_ruleta(const std::vector<double>& fitness_valores) {
+int seleccion_ruleta(const vector<double>& fitness_valores) {
     double suma_fitness = 0;
     for (double fitness : fitness_valores) {
         suma_fitness += fitness;
@@ -101,8 +103,8 @@ int seleccion_ruleta(const std::vector<double>& fitness_valores) {
 }
 
 // Función para realizar el cruce uniforme
-std::vector<int> cruce_uniforme(const std::vector<int>& padre1, const std::vector<int>& padre2) {
-    std::vector<int> hijo(padre1.size());
+vector<int> cruce_uniforme(const vector<int>& padre1, const vector<int>& padre2) {
+    vector<int> hijo(padre1.size());
     for (size_t i = 0; i < padre1.size(); ++i) {
         if (random_double() <= 0.5) {
             hijo[i] = padre1[i];
@@ -114,22 +116,22 @@ std::vector<int> cruce_uniforme(const std::vector<int>& padre1, const std::vecto
 }
 
 // Función para realizar la mutación
-void mutacion(std::vector<int>& individuo) {
+void mutacion(vector<int>& individuo) {
     for (int& gen : individuo) {
         if (random_double() < PROB_MUTACION) {
-            gen = random_int(0, MAX_ITEMS);
+            gen = random_int();
         }
     }
 }
 
 // Función principal del algoritmo genético
-std::vector<int> algoritmo_genetico() {
-    std::vector<std::vector<int>> poblacion = generar_poblacion_inicial();
-    std::vector<int> mejor_solucion;
+vector<int> algoritmo_genetico() {
+    vector<vector<int>> poblacion = generar_poblacion_inicial();
+    vector<int> mejor_solucion;
     double mejor_fitness = 0;
 
     for (int generacion = 0; generacion < NUM_GENERACIONES; ++generacion) {
-        std::vector<double> fitness_valores;
+        vector<double> fitness_valores;
         for (const auto& individuo : poblacion) {
             double fitness = calcular_fitness(individuo);
             fitness_valores.push_back(fitness);
@@ -140,13 +142,13 @@ std::vector<int> algoritmo_genetico() {
             }
         }
 
-        std::vector<std::vector<int>> nueva_poblacion;
+        vector<vector<int>> nueva_poblacion;
 
         while (nueva_poblacion.size() < TAMANO_POBLACION) {
             int indice_padre1 = seleccion_ruleta(fitness_valores);
             int indice_padre2 = seleccion_ruleta(fitness_valores);
 
-            std::vector<int> hijo = poblacion[indice_padre1];
+            vector<int> hijo = poblacion[indice_padre1];
 
             if (random_double() < PROB_CRUZA) {
                 hijo = cruce_uniforme(poblacion[indice_padre1], poblacion[indice_padre2]);
@@ -165,14 +167,14 @@ std::vector<int> algoritmo_genetico() {
 int main() {
     srand(static_cast<unsigned>(time(nullptr)));
 
-    std::vector<int> mejor_solucion = algoritmo_genetico();
+    vector<int> mejor_solucion = algoritmo_genetico();
     double mejor_fitness = calcular_fitness(mejor_solucion);
 
-    std::cout << "Mejor solución encontrada:\n";
+    cout << "Mejor solución encontrada:\n";
     for (size_t i = 0; i < mejor_solucion.size(); ++i) {
-        std::cout << productos[i].nombre << ": " << mejor_solucion[i] << " unidades\n";
+        cout << productos[i].nombre << ": " << mejor_solucion[i] << " unidades\n";
     }
-    std::cout << "Fitness: " << mejor_fitness << std::endl;
+    cout << "Fitness: " << mejor_fitness << endl;
 
     return 0;
 }
